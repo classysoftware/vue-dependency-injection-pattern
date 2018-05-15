@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+      <img src="../assets/logo.png">
     <h1>{{ msg }}</h1>
     <p>
       For guide and recipes on how to configure / customize this project,<br>
@@ -30,10 +31,18 @@
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { Inject } from 'vue-property-decorator';
+
+import { ROUTER } from '../services/router.service';
+
+@Component()
+export default class Hello extends Vue {
+  @Inject(ROUTER) router;
+
+  created() {
+    console.log('hello ', this.router);
   }
 }
 </script>
