@@ -14,6 +14,7 @@ This repository contains a minimal proof of concept for a **Vue JS** app with **
 + [vue-class-component][1],
 + [vue-property-decorator][2] and
 + [vue-router][4]
++ [@babel/plugin-proposal-class-properties][6]
 
 The first two packages allow us to write **Vue** components using ES5 class syntax plus component and property decorators. The router will be used as the injected ressource.
 
@@ -51,3 +52,4 @@ The first two packages allow us to write **Vue** components using ES5 class synt
 [3]: https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy
 [4]: https://github.com/vuejs/vue-router
 [5]: https://github.com/babel/babel/issues/7831
+[6]: https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties
