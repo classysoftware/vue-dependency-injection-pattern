@@ -1,39 +1,38 @@
 <template>
     <div>
         <!-- <pre>constructor: {{constructor}}</pre><br/> -->
-        <component v-if="C" v-bind:is="C"></component>
-        <slot v-if="!C"></slot>
+        <component v-if="component" v-bind:is="component"></component>
+        <slot v-if="!component"></slot>
     </div>
 </template>
 
 <script>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-// export default {
-//     data() {
-//         return {
-//             constructor: null
-//         };
-//     },
-//     computed: {
-//         component() {
-//             this.constructor;
-//         }
-//     },
-//     methods: {
-//         updateComponent(C) {
-//             this.constructor = C;
-//         }
-//     }
-// }
+import { Inject } from 'vue-property-decorator';
+
+import { ROUTER } from '../services/router';
+
 @Component({
     name: 'router-outlet'
 })
 export default class RouterOutletComponent extends Vue {
-    C = null;
 
-    updateComponent(C) {
-        this.C = C;
+    @Inject(ROUTER) router;
+
+    component = null;
+    routeChangesSubscription = null;
+
+    created() {
+        this.routeChangesSubscription = this.router.routeChanges.subscribe(this.routeChanged)
+    }
+
+    destroyed() {
+        this.routeChangesSubscription.unsubscribe();
+    }
+
+    routeChanged({path, component}) {
+        this.component = component;
     }
 }
 

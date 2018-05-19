@@ -5,25 +5,27 @@
 Vue Dependency Injection
 ===
 ## TL;DR
-Vue allows us to use **dependency injection** for fine control over dependencies. For suitable dependencies, e.g. a router service, we may replace 
+Vue allows us to use **dependency injection** for fine control over dependencies. For suitable dependencies, e.g. a router, we may replace 
 ```javascript
-Vue.use(C)
+Vue.use(Cesource)
 ```
 with [provide/inject][9]; e.g.
 ```javascript
 // parent component
-@Component()
-class ParentComponent extends Vue {
-    @Provide(ROUTER) router = router;
+export default {
+    provide: {
+        [RESOURCE]: resource
+    }
 }
 
 // child component
-@Component()
-class ChildComponent extends Vue {
-    @Inject(ROUTER) router;
+export default {
+    inject: {
+        resource: RESOURCE
+    }
 }
 ```
-
+The packages [vue-class-component][1] and [vue-property-decorator][2] let us rewrite the `provide` and `inject` properties using decorators in ES5 classes.
 
 ## About
 This repository contains a minimal proof of concept for a **Vue JS** app with **dependency injection** of a router service instead of
@@ -31,10 +33,28 @@ This repository contains a minimal proof of concept for a **Vue JS** app with **
 The project depends on the following packages 
 + [vue-class-component][1],
 + [vue-property-decorator][2] and
-+ [vue-router][4]
++ [vue-rx][10] (+ [vue-compat][11])
 + [@babel/plugin-proposal-class-properties][6]
 
-The first two packages allow us to write **Vue** components using ES5 class syntax leveraging decorators for compactness and clarity. 
+The first two packages allow us to write Vue components using ES5 class syntax leveraging decorators for compactness and clarity. E.g. we can write
+```javascript
+export default class C extends Vue {
+    // ...
+    @Inject(RESOURCE) r = null;
+    // ...
+}
+```
+instead of 
+```javascript
+extport default {
+    // ...
+    inject: {
+        [RESOURCE]: null
+    },
+    // ...
+}
+```
+ **Rx** will be used to instantiate a route change observable. 
 
 A minimal router was implemented using Vue's `<component>` for dynamic component creation. The router will be used as the injected ressource.
 
@@ -55,3 +75,5 @@ npm run serve
 [7]: https://github.com/vuejs/vue-cli
 [8]: https://nodejs.org/en/download/
 [9]: https://vuejs.org/v2/api/#provide-inject
+[10]: https://github.com/vuejs/vue-rx
+[11]: https://github.com/ReactiveX/rxjs/tree/master/compat

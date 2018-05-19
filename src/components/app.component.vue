@@ -7,9 +7,14 @@
         </ul>
     </nav>
     <main>
-      <router-outlet :ref="appOutletId">
+      <!-- 
+        Retain a reference to the router outlet to be able to register it with the 
+        router. The router outlet receives the component matched to a given path by
+        the router and renders it.
+      -->
+      <router-outlet :ref="routerOutletId">
         Loading...
-        </router-outlet>
+      </router-outlet>
       </main>
   </div>
 </template>
@@ -19,34 +24,46 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Provide } from 'vue-property-decorator';
 
-import routerService, { ROUTER_SERVICE } from '../services/router.service';
 import RouterOutletComponent from './router-outlet.component';
 import RouterLinkComponent from './router-link.component';
 import HelloComponent from './hello.component';
 import ByeComponent from './bye.component';
-import Router from '../services/router';
-// import RouterOutletComponent from '../components/router-outlet.component';
+import Router, { ROUTER } from '../services/router';
+
+// In a more elaborate scenario, we would probably define a pre-configured router 
+// in another file and then export this instead. 
+const router = new Router();
+
+// Define a simple router configuration with two components.
+const routerOutletConfiguration = {
+  'hello': HelloComponent
+  , 'bye': ByeComponent
+  , '': HelloComponent
+};
 
 @Component({
   name: 'app',
   components: {
-    'router-outlet': RouterOutletComponent,
-    'router-link': RouterLinkComponent
+    'router-outlet': RouterOutletComponent
+    , 'router-link': RouterLinkComponent
   }
 })
 export default class App extends Vue {
 
-  @Provide(ROUTER_SERVICE) routerService = routerService;
-  appOutletId = 'app-router-outlet';
+  // Make the router service injectable in descendant components.
+  @Provide(ROUTER) router = router;
+
+  // Define a router outlet id to identify the router outlet used by the app.
+  routerOutletId = 'app-router-outlet';
 
   mounted() {
-    const appOutletRef = this.$refs[this.appOutletId];
-    this.routerService.registerOutlet(this.appOutletId, appOutletRef, {
-      '/hello': HelloComponent,
-      '/bye': ByeComponent,
-      '*': HelloComponent
-    });
-    this.routerService.navigateTo('/hello');
+
+    // Register the router outlet and associate it with a configuration.
+    const routerOutletRef = this.$refs[this.routerOutletId];
+    this.router.register('/', routerOutletRef, routerOutletConfiguration);
+
+    // Navigate to root.
+    this.router.navigateTo('/');
   }
 
 }
