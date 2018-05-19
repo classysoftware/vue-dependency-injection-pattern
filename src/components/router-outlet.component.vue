@@ -35,7 +35,10 @@ export default class RouterOutletComponent extends Vue {
     }
 
     routeChanged({path, basePath, subPath, component}) {
-        this.activeComponent = component;
+        // Ignore route changes not meant for this outlet.
+        if (basePath === this.basePath) {
+            this.activeComponent = component;
+        }
     }
 }
 
