@@ -10,7 +10,7 @@
       <router-outlet basePath="/" :routerTable="routerTable">
         Loading...
       </router-outlet>
-      </main>
+    </main>
   </div>
 </template>
 
@@ -57,13 +57,18 @@ export default class App extends Vue {
 html, body {
   padding: 0;
   margin: 0;
-  overflow-y: scroll;
-  overflow-x: none;
   width: 100%;
   height: 100%;
 }
 
+html {
+  overflow-y: scroll;
+  overflow-x: none;
+}
+
+
 #app {
+  height: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -88,6 +93,7 @@ nave u li {
 
 main {
   width: 100%;
+  height: 100%;
   margin: 4rem auto;
 }
 </style>
