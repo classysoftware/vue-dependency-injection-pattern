@@ -1,34 +1,55 @@
+import { Subject } from 'rxjs/Subject';
+
+export const ROUTER = Symbol('router');
 export default class Router {
 
-    route = '/';
+    // The active route.
+    routeChanges = new Subject();
+
+    // The outlets controlled by this router instance.
     outlets = {};
 
-    registerOutlet = (id, outletRef, config) => {
-        if (this.outlets[id]) {
-            throw new Error(`Invalid argument: outlet already registered (id: "${id}")`);
+    /**
+     * Register an outlet reference by a base path and associate it with a configuration.
+     * Right now the configuration only maps sub paths of the base path to component constructors. 
+     */
+    register = (basePath, outletRef, config) => {
+        if(basePath <= '') {
+            throw new Error('Illegal argument: base path may not be the empty string.');
         }
 
-        this.outlets[id] = {outletRef, config};
+        this.outlets[basePath] = {outletRef, config};
     }
 
-    unregisterOutlet = (id) => {
-        if (!this.outlets[id]) {
-            throw new Error(`Invalid argument: outlet not registered (id: "${id}")`);
-        }
-
-        this.outlets[id] = null;
+    unregister = (basePath) => {
+        this.outlets[basePath] = null;
     }
 
     navigateTo = (path) => {
-        const outletId = Object.keys(this.outlets)
-            .find(outletId => typeof this.outlets[outletId].config[path] !== undefined);
 
-        if (outletId) {
+        // Find a matching base path with longest prefix matching.
+        const matchedBasePath = Object.keys(this.outlets)
+            .reduce(
+                (currentMatch, currentPath) => 
+                path.startsWith(currentPath) && currentPath.length > currentMatch.length ? currentPath : currentMatch
+                , ''
+            );
 
-            const descriptor = this.outlets[outletId]; 
-            const outletRef = descriptor.outletRef;
-            outletRef.updateComponent(descriptor.config[path]);
+        const matchedOutlet = this.outlets[matchedBasePath];
+        if (matchedOutlet) {
 
+            const {outletRef, config} = matchedOutlet;
+            const matchedSubpath = path.substring(matchedBasePath.length);
+            const matchedComponent = config[matchedSubpath];
+
+            if (matchedComponent) {
+               this.routeChanges.next({path, component: matchedComponent});
+            } else {
+                console.warn(`Unable to find matching component for subpath (base-path: "${matchedBasePath}"`)
+            }
+
+        } else {
+            console.warn(`Unable to find a matching outlet for path (path: "${path}").`);
         }
     }
 }
