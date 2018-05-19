@@ -1,21 +1,19 @@
 Vue Dependency Injection
 ===
 ## TL;DR
-Vue allows us to use [dependency injection][9] using the `provide` and `inject` properties. 
+Vue enables an alternative **dependency injection** pattern using the [provide/inject][9] properties in addition to `Vue.use`. Injected resources are accessible by any descendent component of a providing ancestor component using a string or symbol identifier. 
 
-Using this, resources provided by an ancestor component in the component tree are accessible by any descendent component using a string or symbol identifier.  
-
-This dependency injection pattern using `provide`/`inject` may replace `Vue.use()` for suitable resources. This repo demonstrates this for a simple router.
+This repo contains a **proof of concept** for dependency injection of a **simple router** using [provide/inject][9].
 
 ## About
-### Project Dependencies
+### Dependencies
 The project depends on the following packages 
 + [vue-class-component][1],
 + [vue-property-decorator][2] and
-+ [vue-rx][10] (+ [vue-compat][11])
++ [vue-rx][10] (+ [@rxjs/compat][11])
 + [@babel/plugin-proposal-class-properties][6]
 
-The first two packages allow us to write Vue components using ES5 class syntax leveraging decorators for compactness and clarity. E.g. we can write
+The first two packages allow us to write Vue components using the **ES5 class syntax** and the proposed **decorator syntax** for compactness and clarity. E.g. we can write
 ```javascript
 // ancestor component
 export default class Ancestor extends Vue {
@@ -51,9 +49,9 @@ export default {
     // ...
 }
 ```
- **Rx** was be used to create a route change observable. 
+ **Rx** was used to create a route change observable to broadcast route change events.
 
-### App Structure
+### Structure
 #### App Component
 `AppComponent` provides a simple router component using the `@Provide` decorator. The symbol `ROUTER` uniquely identifies the router dependency.
 ```javascript
@@ -83,7 +81,7 @@ The app view consists of a simple navigation bar and a content box.
   </div>
 ```
 
-In the navigation bar `RouterLinkComponent` (selected by `router-link`) is used to trigger navigation changes on click. The content box contains a `RouterOutletComponent` (selected by `router-outlet`) which dynamically renders components using Vue's `<component>`. A router table is passed to the outlet (binding `:routerTable="routerTable"`, content see below) 
+In the navigation bar, we use `RouterLinkComponent` (selected by `router-link`) to trigger navigation changes on click. The content box contains a `RouterOutletComponent` (selected by `router-outlet`) which dynamically renders components using Vue's `<component>`. A router table is passed to the outlet (binding `:routerTable="routerTable"`, content see below) 
 ```javascript
 {
     'hello': HelloComponent
@@ -91,7 +89,7 @@ In the navigation bar `RouterLinkComponent` (selected by `router-link`) is used 
     , '': HelloComponent
 }
 ```
-which lets the router outlet register itself with the router on creation
+We pass this to the injected router's `register(basePath, routerTable)` method upon creation so that it will process it during path resolution.
 ```js
 export default class RouterOutletComponent extends Vue {
 
@@ -138,7 +136,7 @@ export default class RouterOutletComponent extends Vue {
 #### Router
 A minimal router was implemented using Vue's `<component>` for dynamic component creation. The router is injected into both the `RouterLinkComponent` and `RouterOutletComponent` instances using the symbol `ROUTER`. 
 
-The basic event flow is as follows:
+The basic **routing event flow** is as follows:
 
 1. A `RouterLinkComponent` instance handles a click event by calling `navigateTo` on the injected router 
 ```javascript
@@ -160,10 +158,15 @@ export default class RouterLinkComponent extends Vue {
 
 ## Installation
 1. Clone this repository
-2. Start the server
+2. Install dependencies
+    ```bash
+    npm install
+    ```
+3. Start the server
     ```bash
     npm run serve
     ```
+4. Enjoy the bountiful choice of links ;)
 
 You should see the vue logo and a message "Hello there!" or "Bye!" depending on which link you clicked. The console log will contain additional information about the matched path, sub path and component.
 > **EXAMPLE:**
