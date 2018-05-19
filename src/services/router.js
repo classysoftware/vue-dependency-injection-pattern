@@ -39,7 +39,7 @@ export default class Router {
         if (matchedRouterTable) {
 
             // Determine the component matched by the subpath.
-            const matchedSubpath = path.substring(matchedBasePath.length);
+            const matchedSubpath = path.substr(matchedBasePath.length);
             const matchedComponent = matchedRouterTable[matchedSubpath];
 
             // Emit the path and matched component or log a warning.
@@ -47,7 +47,7 @@ export default class Router {
                this.routeChanges.next({
                    path
                    , basePath: matchedBasePath
-                   , subpath: matchedSubpath
+                   , subPath: matchedSubpath
                    , component: matchedComponent
                 });
             } else {
