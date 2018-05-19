@@ -7,20 +7,21 @@
 <script>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop, Inject } from 'vue-property-decorator';
+import { Inject, Prop } from 'vue-property-decorator';
 import { ROUTER } from '../services/router';
 
 @Component({
     name: 'router-link',
+    // `@Prop() to` results in a warning, so we resort to declaring the `to` props in `@Component.props`.
     props: ['to']
 })
 export default class RouterLinkComponent extends Vue {
 
-//    @Prop(String) to = null;
+    // @Prop() to = null;
     @Inject(ROUTER) router;
 
     clicked() {
-        // tell the router to navigate to the path passed via the "to" props.
+        // Tell the router to navigate to the path passed via the "to" props.
         this.router.navigateTo(this.to);
     }    
 

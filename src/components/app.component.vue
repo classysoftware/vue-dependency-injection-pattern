@@ -7,12 +7,7 @@
         </ul>
     </nav>
     <main>
-      <!-- 
-        Retain a reference to the router outlet to be able to register it with the 
-        router. The router outlet receives the component matched to a given path by
-        the router and renders it.
-      -->
-      <router-outlet :ref="routerOutletId">
+      <router-outlet basePath="/" :routerTable="routerTable">
         Loading...
       </router-outlet>
       </main>
@@ -29,17 +24,11 @@ import RouterLinkComponent from './router-link.component';
 import HelloComponent from './hello.component';
 import ByeComponent from './bye.component';
 import Router, { ROUTER } from '../services/router';
+import routerTable from '../services/router-table';
 
-// In a more elaborate scenario, we would probably define a pre-configured router 
-// in another file and then export this instead. 
+// In a more elaborate scenario, we would probably define a pre-configured router for 
+// basic app routing in another file and then export it from there.
 const router = new Router();
-
-// Define a simple router configuration with two components.
-const routerOutletConfiguration = {
-  'hello': HelloComponent
-  , 'bye': ByeComponent
-  , '': HelloComponent
-};
 
 @Component({
   name: 'app',
@@ -53,15 +42,10 @@ export default class App extends Vue {
   // Make the router service injectable in descendant components.
   @Provide(ROUTER) router = router;
 
-  // Define a router outlet id to identify the router outlet used by the app.
-  routerOutletId = 'app-router-outlet';
+  // Define a router table for the outlet.
+  routerTable = routerTable;
 
   mounted() {
-
-    // Register the router outlet and associate it with a configuration.
-    const routerOutletRef = this.$refs[this.routerOutletId];
-    this.router.register('/', routerOutletRef, routerOutletConfiguration);
-
     // Navigate to root.
     this.router.navigateTo('/');
   }
