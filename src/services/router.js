@@ -6,44 +6,50 @@ export default class Router {
     // The active route.
     routeChanges = new Subject();
 
-    // The outlets controlled by this router instance.
-    outlets = {};
+    // The router configuration.
+    configuration = {};
 
     /**
      * Register an outlet reference by a base path and associate it with a configuration.
      * Right now the configuration only maps sub paths of the base path to component constructors. 
      */
-    register = (basePath, outletRef, config) => {
+    register = (basePath, routerTable) => {
         if(basePath <= '') {
             throw new Error('Illegal argument: base path may not be the empty string.');
         }
 
-        this.outlets[basePath] = {outletRef, config};
+        this.configuration[basePath] = routerTable;
     }
 
     unregister = (basePath) => {
-        this.outlets[basePath] = null;
+        this.configuration[basePath] = null;
     }
 
     navigateTo = (path) => {
 
         // Find a matching base path with longest prefix matching.
-        const matchedBasePath = Object.keys(this.outlets)
+        const matchedBasePath = Object.keys(this.configuration)
             .reduce(
                 (currentMatch, currentPath) => 
                 path.startsWith(currentPath) && currentPath.length > currentMatch.length ? currentPath : currentMatch
                 , ''
             );
 
-        const matchedOutlet = this.outlets[matchedBasePath];
-        if (matchedOutlet) {
+        const matchedRouterTable = this.configuration[matchedBasePath];
+        if (matchedRouterTable) {
 
-            const {outletRef, config} = matchedOutlet;
+            // Determine the component matched by the subpath.
             const matchedSubpath = path.substring(matchedBasePath.length);
-            const matchedComponent = config[matchedSubpath];
+            const matchedComponent = matchedRouterTable[matchedSubpath];
 
+            // Emit the path and matched component or log a warning.
             if (matchedComponent) {
-               this.routeChanges.next({path, component: matchedComponent});
+               this.routeChanges.next({
+                   path
+                   , basePath: matchedBasePath
+                   , subpath: matchedSubpath
+                   , component: matchedComponent
+                });
             } else {
                 console.warn(`Unable to find matching component for subpath (base-path: "${matchedBasePath}"`)
             }
