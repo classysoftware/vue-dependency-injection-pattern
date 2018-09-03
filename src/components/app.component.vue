@@ -21,8 +21,6 @@ import { Provide } from 'vue-property-decorator';
 
 import RouterOutletComponent from './router-outlet.component';
 import RouterLinkComponent from './router-link.component';
-import HelloComponent from './hello.component';
-import ByeComponent from './bye.component';
 import Router, { ROUTER } from '../services/router';
 import routerTable from '../services/router-table';
 

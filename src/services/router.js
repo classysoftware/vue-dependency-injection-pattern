@@ -51,10 +51,12 @@ export default class Router {
                    , component: matchedComponent
                 });
             } else {
+                // eslint-disable-next-line
                 console.warn(`Unable to find matching component for subpath (base-path: "${matchedBasePath}"`)
             }
 
         } else {
+            // eslint-disable-next-line
             console.warn(`Unable to find a matching outlet for path (path: "${path}").`);
         }
     }

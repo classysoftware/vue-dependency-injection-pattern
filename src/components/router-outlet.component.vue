@@ -37,6 +37,7 @@ export default class RouterOutletComponent extends Vue {
     routeChanged({path, basePath, subPath, component}) {
         // Ignore route changes not meant for this outlet.
         if (basePath === this.basePath) {
+            // eslint-disable-next-line
             console.info(`route-change (path: ${path}, base-path: ${basePath}, sub-path: ${subPath}): ${component.name}Component`);
             this.activeComponent = component;
         }

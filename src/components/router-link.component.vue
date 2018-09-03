@@ -7,7 +7,7 @@
 <script>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Inject, Prop } from 'vue-property-decorator';
+import { Inject } from 'vue-property-decorator';
 import { ROUTER } from '../services/router';
 
 @Component({
@@ -17,7 +17,6 @@ import { ROUTER } from '../services/router';
 })
 export default class RouterLinkComponent extends Vue {
 
-    // @Prop() to = null;
     @Inject(ROUTER) router;
 
     clicked() {
